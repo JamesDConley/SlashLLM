@@ -35,7 +35,7 @@ def main(debug) -> None:
         st.markdown(f"```json\n{json.dumps(conversation_doc, indent=4)}\n")
     
     # Set Title
-    st.title("Local LLM")
+    st.title("Slash LLM")
 
     new_conversation_doc = conversation_sidebar(client, conversations, user_id, conversation_doc)
     if current_conversation_id != new_conversation_doc["_id"]:
