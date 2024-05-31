@@ -56,6 +56,12 @@ def conversation_sidebar(client, conversations, user_id, current_doc):
             # Highlight the current button by changing it's style
             if conversation_doc["_id"] == current_doc["_id"]:
                 conversation_title = f"***{conversation_title}***"
+            
+            # This deletes unselected empty entries
+            elif len(conversation_doc["messages"]) == 1:
+                client.delete_conversation(user_id, conversation_doc["_id"])
+                continue
+
             # Conversation selection button and delete button
             col1, col2 = st.columns((4, 1))
             with col1:
