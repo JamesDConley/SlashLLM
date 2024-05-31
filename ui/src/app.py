@@ -4,13 +4,14 @@ from uuid import uuid4
 
 import json
 
-from config import API_URL
 from user_state import get_user_id
 from ui import display_messages, get_user_input, conversation_sidebar
 from api_utils import Client
+from config import API_URL
 
 
 def main(debug) -> None:
+    # URL of the backend API provided by the `api` container
     user_id = get_user_id()
 
     # Setup session information

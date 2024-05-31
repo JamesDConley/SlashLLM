@@ -69,7 +69,6 @@ def get_conversation():
         db_users.save(user_data)
         return jsonify(dict(conversation_doc))
 
-# TODO :  make a common interface for slash commands so it's easy to add functionality. (this probably should happen in the run_query method)
 @app.route('/query', methods=['POST'])
 def query_system():
     conversation_id = request.args.get('conversation_id', None)

@@ -23,8 +23,8 @@ services:
     build: ./api
     ports:
       - "5000:5000"
-    # env_file:
-    #   - path: ./docker.env
+    env_file:
+      - path: ./docker.env
     volumes:
       - ./api:/app
     depends_on:
@@ -42,6 +42,8 @@ services:
       - "8101:8101"
     volumes:
       - ./tool_api:/app
+    env_file:
+      - path: ./docker.env
     command: python src/tool_api.py
 
   couchdb:
