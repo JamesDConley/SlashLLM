@@ -1,0 +1,5 @@
+openai==1.30.1
+pycouchdb==1.14.2
+Requests==2.31.0
+streamlit==1.34.0
+streamlit_cookies_manager==0.2.0

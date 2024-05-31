@@ -1,0 +1,4 @@
+Flask
+Flask_Cors
+openai
+pycouchdb==1.14.2

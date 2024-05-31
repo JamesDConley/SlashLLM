@@ -1,0 +1,66 @@
+version: '3'
+services:
+  ui:
+    build: ./ui
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+    # env_file:
+    #   - path: ./docker.env
+    volumes:
+      - ./ui:/app
+    depends_on:
+      - couchdb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://couchdb:5984"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: streamlit run src/app.py 
+
+  api:
+    build: ./api
+    ports:
+      - "5000:5000"
+    # env_file:
+    #   - path: ./docker.env
+    volumes:
+      - ./api:/app
+    depends_on:
+      - couchdb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://couchdb:5984"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: python src/api.py
+  
+  tool-api:
+    build: ./tool_api
+    ports:
+      - "8101:8101"
+    volumes:
+      - ./tool_api:/app
+    command: python src/tool_api.py
+
+  couchdb:
+    image: couchdb:3
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    volumes:
+      - ./data/volumes/couchdb:/opt/couchdb/data
+    ports:
+      - "5984:5984"
+
+  # minio:
+  #   image: minio/minio:latest
+  #   env_file:
+  #     - docker.env
+  #   volumes:
+  #     - ./data/volumes/minio:/data
+  #   ports:
+  #     - "9000:9000"
+  #     - "9001:9001"
+  #   command: server /data

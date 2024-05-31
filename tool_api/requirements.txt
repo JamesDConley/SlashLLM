@@ -1,0 +1,4 @@
+duckduckgo_search
+Flask
+openai
+pydantic
