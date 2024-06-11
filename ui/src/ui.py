@@ -42,8 +42,8 @@ def conversation_sidebar(client, conversations, user_id, current_doc):
             # Create new conversation via API
             conversation_doc = client.get_or_create_conversation(user_id, new_id)
             return_val = conversation_doc
-
-        for i, conversation_id in enumerate(conversations):
+        
+        for i, conversation_id in enumerate(conversations[::-1]):
             # Get conversation title from API
             conversation_doc = client.get_or_create_conversation(user_id, conversation_id)
             
