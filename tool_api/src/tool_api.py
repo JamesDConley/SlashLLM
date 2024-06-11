@@ -1,20 +1,29 @@
-from flask import Flask, request, jsonify
-from guided_agent.agent import GuidedAgent
-from tools.duck_duck_go_tool import DuckDuckGoSearch
+import logging
+from waitress import serve
+from flask import Flask, request, Response
+from guided_agent.stream_agent import StreamingGuidedAgent
+from stream_tools.duck_duck_go_stream_tool import DuckDuckGoSearch
 
+logger = logging.getLogger(__name__)
 app = Flask(__name__)
-
 
 @app.route('/search', methods=['POST'])
 def run_request():
+    logger.info("Got search request")
     ddg_tool = DuckDuckGoSearch()
-    agent = GuidedAgent([ddg_tool])
+    agent = StreamingGuidedAgent([ddg_tool])
     user_request = request.get_json()['query']
-    # This isn't used but leaving it here since this is also an example of how to set this up
-    msg_history = request.get_json()['message_history']
-    output = agent.run(user_request)
-    print(f"Generated output : {output}")
-    return jsonify({'result': output})
+    
+    def generate():
+        for i, item in enumerate(agent.run(user_request)):
+            logger.info(f"Received Yield : {i}")
+            if item[0] == 'display':
+                yield f"Display: {item[1]}\n"
+            elif item[0] == 'result':
+                yield f"Result: {item[1]}\n"
+        
+    return Response(generate(), mimetype='text/plain')
 
 if __name__ == '__main__':
-    app.run("0.0.0.0", port=8101)
+    logging.basicConfig(filename="/logs/tool_api.log", level=logging.INFO, format='%(asctime)s %(message)s')
+    serve(app, host="0.0.0.0", port=8101)

@@ -11,6 +11,8 @@ Here's the user's request
 {user_request}
 ### End Request
 
+You may use actions multiple times if need be.
+
 Generate a step by step plan to accomplish the given request using the available actions.
 """
 

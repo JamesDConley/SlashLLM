@@ -1,4 +1,5 @@
 # app.py
+import logging
 import streamlit as st
 from uuid import uuid4
 
@@ -31,9 +32,9 @@ def main(debug) -> None:
     if debug:
         st.markdown("# Running in Debug Mode")
         st.markdown(f"### Current User Data")
-        st.markdown(f"```json\n{json.dumps(user_doc, indent=4)}\n")
+        st.markdown(f"```json\n{json.dumps(user_doc, indent=4)}\n```\n")
         st.markdown("### Current Conversation Data")
-        st.markdown(f"```json\n{json.dumps(conversation_doc, indent=4)}\n")
+        st.markdown(f"```json\n{json.dumps(conversation_doc, indent=4)}\n```\n")
     
     # Set Title
     st.title("Slash LLM")
@@ -58,4 +59,5 @@ def main(debug) -> None:
         st.rerun()
 
 if __name__ == "__main__":
+    logging.basicConfig(filename="/logs/app.log", level=logging.INFO, format='%(asctime)s %(message)s')
     main(debug=False)

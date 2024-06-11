@@ -1,14 +1,17 @@
+import logging
 from openai import OpenAI
-from config import OPENAI_API_KEY, OPENAI_API_BASE, MODEL_NAME
+from config import VLLM_API_KEY, VLLM_API_BASE, VLLM_MODEL_NAME
+
+logger = logging.getLogger(__name__)
 
 def call_model(messages, temperature=0.5):
     client = OpenAI(
-        api_key = OPENAI_API_KEY,
-        base_url = OPENAI_API_BASE,
+        api_key = VLLM_API_KEY,
+        base_url = VLLM_API_BASE,
     )
 
     completion = client.chat.completions.create(
-        model=MODEL_NAME,
+        model=VLLM_MODEL_NAME,
         messages=messages,
         stream=True,
         temperature=temperature
@@ -18,14 +21,15 @@ def call_model(messages, temperature=0.5):
             yield chunk.choices[0].delta.content
             
 def simple_model_call(prompt, temperature=0.5, extra_body=None):
+    logger.info(f"Ran prompt : {prompt}")
     client = OpenAI(
-        api_key = OPENAI_API_KEY,
-        base_url = OPENAI_API_BASE,
+        api_key = VLLM_API_KEY,
+        base_url = VLLM_API_BASE,
     )
     if extra_body is None:
         extra_body = {}
     completion = client.chat.completions.create(
-        model=MODEL_NAME,
+        model=VLLM_MODEL_NAME,
         messages=[{"role" : "user", "content" : prompt}],
         temperature=temperature,
         extra_body = extra_body

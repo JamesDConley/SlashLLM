@@ -10,6 +10,7 @@ services:
     #   - path: ./docker.env
     volumes:
       - ./ui:/app
+      - ./logs:/logs
     depends_on:
       - couchdb
     healthcheck:
@@ -27,6 +28,7 @@ services:
       - path: ./docker.env
     volumes:
       - ./api:/app
+      - ./logs:/logs
     depends_on:
       - couchdb
     healthcheck:
@@ -42,6 +44,7 @@ services:
       - "8101:8101"
     volumes:
       - ./tool_api:/app
+      - ./logs:/logs
     env_file:
       - path: ./docker.env
     command: python src/tool_api.py
@@ -53,6 +56,7 @@ services:
       - COUCHDB_PASSWORD=password
     volumes:
       - ./data/volumes/couchdb:/opt/couchdb/data
+      - ./logs:/logs
     ports:
       - "5984:5984"
 

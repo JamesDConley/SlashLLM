@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pycouchdb import Server
@@ -115,4 +116,5 @@ def delete_conversation():
         return "User does not have permission to delete this conversation", 403
 
 if __name__ == '__main__':
+    logging.basicConfig(filename="/logs/api.log", level=logging.INFO, format='%(asctime)s %(message)s')
     app.run(host="0.0.0.0")

@@ -1,3 +1,4 @@
+import logging
 import os
 from openai import OpenAI
 import requests
@@ -5,6 +6,8 @@ from config import TOOL_MAPPINGS, OPENAI_API_KEY, OPENAI_API_BASE, MODEL_NAME
 import traceback
 
 from flask import jsonify
+
+logger = logging.getLogger(__name__)
 
 def call_model(messages, temperature=0.5):
     client = OpenAI(
@@ -27,16 +30,15 @@ def call_tool(api_name, message, message_history):
     json_data = {"query" : message, "message_history" : message_history}
     url = TOOL_MAPPINGS[api_name]["url"]
     try:
-        response = requests.post(url, json=json_data)
-        if response.status_code == 200:
+        response = requests.post(url, json=json_data, stream=True)
+        for chunk in response.iter_content(16):
+            chunk = chunk.decode("utf-8")
             # Get the returned dictionary from the response
-            result = response.json()["result"]
-            return result
-        else:
-            return "Received Error Status from Endpoint."
+            logger.info(f"Yielding chunk : {chunk}")
+            yield chunk
     except Exception as e:
         print(traceback.format_exc())
-        return "Error reaching endpoint"
+        yield "Error reaching endpoint"
 
 
 def run_query(message_history, user_request, message_db):
@@ -53,10 +55,12 @@ def run_query(message_history, user_request, message_db):
         text = user_request[2+len(command):]
         
         if command in TOOL_MAPPINGS.keys():
-            # TODO : Make this stream
+            full_response = ""
             response = call_tool(command, text, message_history["messages"])
-            yield response
-            message_history["messages"].append( {"role" : "system", "content" : response})
+            for item in response:
+                yield item
+                full_response += item
+            message_history["messages"].append( {"role" : "system", "content" : full_response})
 
         else:
             message = {"role" : "system", "content" : f"Unknown Command `{command}`"}

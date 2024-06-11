@@ -1,7 +1,11 @@
 import os
-OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-OPENAI_API_BASE = os.environ["OPENAI_API_BASE"]
-MODEL_NAME = os.environ["MODEL_NAME"]
+# OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+# OPENAI_API_BASE = os.environ["OPENAI_API_BASE"]
+# MODEL_NAME = os.environ["MODEL_NAME"]
+
+OPENAI_API_KEY="EMPTY"
+OPENAI_API_BASE="http://192.168.1.33:8183/v1"
+MODEL_NAME="/models/Qwen2-72B-Instruct-AWQ"
 
 TOOL_MAPPINGS = {
     "search": {"url": "http://tool-api:8101/search"},
