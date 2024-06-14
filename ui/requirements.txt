@@ -1,3 +1,6 @@
-Requests==2.32.2
+chromadb==0.4.17
+Requests==2.32.3
 streamlit==1.34.0
 streamlit_cookies_manager==0.2.0
+unstructured[all-docs]
+sentence_transformers

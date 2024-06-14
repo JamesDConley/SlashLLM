@@ -11,6 +11,8 @@ services:
     volumes:
       - ./ui:/app
       - ./logs:/logs
+      - ./data/volumes/files:/files
+      - ./data/volumes/chroma_data:/chroma_data
     depends_on:
       - couchdb
     healthcheck:
@@ -18,7 +20,7 @@ services:
       interval: 1s
       timeout: 3s
       retries: 5
-    command: streamlit run src/app.py 
+    command: streamlit run src/Chat.py 
 
   api:
     build: ./api

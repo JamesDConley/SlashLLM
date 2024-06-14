@@ -11,7 +11,9 @@ from api_utils import Client
 from config import API_URL
 
 
-def main(debug) -> None:
+st.set_page_config(page_title="/Chat", page_icon="💬")
+
+def chat_page(debug) -> None:
     # URL of the backend API provided by the `api` container
     user_id = get_user_id()
 
@@ -60,4 +62,4 @@ def main(debug) -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(filename="/logs/app.log", level=logging.INFO, format='%(asctime)s %(message)s')
-    main(debug=False)
+    chat_page(debug=False)
