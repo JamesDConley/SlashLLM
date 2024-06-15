@@ -14,7 +14,7 @@ services:
       - ./data/volumes/files:/files
       - ./data/volumes/chroma_data:/chroma_data
     depends_on:
-      - couchdb
+      - api
     healthcheck:
       test: ["CMD", "curl", "-f", "http://couchdb:5984"]
       interval: 1s
@@ -30,9 +30,9 @@ services:
       - path: ./docker.env
     volumes:
       - ./api:/app
-      - ./logs:/logs
+      - ./logs:/logs 
     depends_on:
-      - couchdb
+      - tool-api
     healthcheck:
       test: ["CMD", "curl", "-f", "http://couchdb:5984"]
       interval: 1s
@@ -49,6 +49,9 @@ services:
       - ./logs:/logs
     env_file:
       - path: ./docker.env
+    depends_on:
+      - couchdb
+      - chromadb
     command: python src/tool_api.py
 
   couchdb:
@@ -61,6 +64,15 @@ services:
       - ./logs:/logs
     ports:
       - "5984:5984"
+  
+  chromadb:
+    image: chromadb/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+    volumes:
+      - ./data/volumes/chroma-data:/chroma/chroma/
+    ports:
+      - 8000:8000
 
   # minio:
   #   image: minio/minio:latest

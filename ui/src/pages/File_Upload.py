@@ -7,8 +7,9 @@ import streamlit as st
 import os
 import uuid
 from unstructured.partition.auto import partition
+import chromadb
 from chromadb.utils import embedding_functions
-from chromadb import PersistentClient
+from chromadb.config import Settings
 
 st.set_page_config(page_title="/Upload", page_icon="📓")
 
@@ -18,7 +19,7 @@ SUPPORTED_FILE_TYPES = [
     ".epub", 
     ".xlsx", ".xls", 
     ".html", ".htm", 
-    ".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".heic", 
+    ".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".heic",  
     ".md", 
     ".org", 
     ".odt", 
@@ -33,8 +34,8 @@ SUPPORTED_FILE_TYPES = [
     ".js", ".py", ".java", ".cpp", ".cc", ".cxx", ".c", ".cs", ".php", ".rb", ".swift", ".ts", ".go"
 ]
 
-# Initialize ChromaDB client
-client = PersistentClient(path="/chroma_data")
+
+chroma_client = chromadb.HttpClient(host="chromadb", port=8000, settings=Settings(allow_reset=True, anonymized_telemetry=False))
 
 # Create an embedding function
 ef = embedding_functions.SentenceTransformerEmbeddingFunction()
@@ -65,7 +66,7 @@ def upload_page(file_dir="/files"):
         summary = " ".join([e.text for e in elements[:2]])
 
         # 3. Add the summary to the file level ChromaDB collection along with a random UUID for that file
-        file_collection = client.get_or_create_collection(name="files", embedding_function=ef)
+        file_collection = chroma_client.get_or_create_collection(name="files", embedding_function=ef)
         file_collection.add(
             documents=[summary],
             ids=[file_uuid],
@@ -73,7 +74,7 @@ def upload_page(file_dir="/files"):
         )
 
         # 4. Chunk the text and add it to a ChromaDB collection just for that file. The collection name should be the UUID
-        text_collection = client.get_or_create_collection(name=file_uuid, embedding_function=ef)
+        text_collection = chroma_client.get_or_create_collection(name=file_uuid, embedding_function=ef)
         text_collection.add(
             documents=[e.text for e in elements],
             ids=[str(uuid.uuid4()) for _ in elements],

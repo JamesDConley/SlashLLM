@@ -9,6 +9,7 @@ MODEL_NAME="/models/Qwen2-72B-Instruct-AWQ"
 
 TOOL_MAPPINGS = {
     "search": {"url": "http://tool-api:8101/search"},
+    "doc_search":  {"url": "http://tool-api:8101/doc_search"},
 }
 
 SYSTEM_PROMPT = "You are a virtual assistant created by the open source community. You have access to a chat log that involves a user who can also access a few other tools. Respond using markdown. Prefer aligning lists and such to the left of the page (not centered)."

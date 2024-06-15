@@ -3,3 +3,4 @@ Flask
 openai
 pydantic
 waitress
+chromadb==0.4.17
