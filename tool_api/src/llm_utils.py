@@ -28,6 +28,9 @@ def simple_model_call(prompt, temperature=0.5, extra_body=None):
     )
     if extra_body is None:
         extra_body = {}
+    # else:
+    #     if "guided_decoding_backend" not in extra_body:
+    #         extra_body["guided_decoding_backend"] = "lm-format-enforcer"
     completion = client.chat.completions.create(
         model=VLLM_MODEL_NAME,
         messages=[{"role" : "user", "content" : prompt}],

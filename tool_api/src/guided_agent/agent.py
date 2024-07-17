@@ -11,7 +11,7 @@ from guided_agent.tool import Tool
 logger = logging.getLogger(__name__)
 
 class SolveInput(BaseModel):
-    answer: constr(max_length=250)
+    answer: constr(max_length=2500)
 
 class SolveTool(Tool):
     def run(self, tool_input):

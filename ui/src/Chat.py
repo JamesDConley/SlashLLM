@@ -14,6 +14,15 @@ from config import API_URL
 st.set_page_config(page_title="/Chat", page_icon="💬")
 
 def chat_page(debug) -> None:
+    st.markdown(
+    r"""
+    <style>
+    .stDeployButton {
+            visibility: hidden;
+        }
+    </style>
+    """, unsafe_allow_html=True
+    )
     # URL of the backend API provided by the `api` container
     user_id = get_user_id()
 

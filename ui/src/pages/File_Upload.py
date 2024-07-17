@@ -59,7 +59,7 @@ def upload_page(file_dir="/files"):
 
         # TODO : Post process the file
         # 1. Use unstructured to get the full text of the file
-        elements = partition(file_path)
+        elements = partition(file_path, stategy="ocr_only")
 
         # 2. Get a few sentence summary of the full file
         # For simplicity, we'll just take the first few elements as summary

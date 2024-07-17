@@ -21,9 +21,9 @@ def search():
         for i, item in enumerate(agent.run(user_request)):
             logger.info(f"Received Yield : {i}")
             if item[0] == 'display':
-                yield f"Display: {item[1]}\n"
+                yield f"{item[1]}\n"
             elif item[0] == 'result':
-                yield f"Result: {item[1]}\n"
+                yield f"{item[1]}\n"
         
     return Response(generate(), mimetype='text/plain')
 
@@ -39,9 +39,9 @@ def doc_search():
         for i, item in enumerate(agent.run(user_request)):
             logger.info(f"Received Yield : {i}")
             if item[0] == 'display':
-                yield f"Display: {item[1]}\n"
+                yield f"{item[1]}\n"
             elif item[0] == 'result':
-                yield f"Result: {item[1]}\n"
+                yield f"{item[1]}\n"
         
     return Response(doc_generate(), mimetype='text/plain')
 

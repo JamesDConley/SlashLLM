@@ -30,14 +30,25 @@ def call_tool(api_name, message, message_history):
     json_data = {"query" : message, "message_history" : message_history}
     url = TOOL_MAPPINGS[api_name]["url"]
     try:
-        response = requests.post(url, json=json_data, stream=True)
+        response = requests.post(url, json=json_data, stream=True, timeout=None)
+        buffer = None
         for chunk in response.iter_content(16):
-            chunk = chunk.decode("utf-8")
-            # Get the returned dictionary from the response
-            logger.info(f"Yielding chunk : {chunk}")
-            yield chunk
+            try:
+                if buffer is not None:
+                    new_chunk = buffer + chunk
+                    logger.info(f"Combined bytes \n{buffer}\nand\n{chunk}\ninto\n{new_chunk}")
+                    chunk = new_chunk
+                chunk = chunk.decode("utf-8")
+                # Get the returned dictionary from the response
+                logger.info(f"Yielding chunk : {chunk}")
+                yield chunk
+                buffer = None
+            except UnicodeDecodeError:
+                buffer = chunk
+            
     except Exception as e:
-        print(traceback.format_exc())
+        logger.error("ENCOUNTERED ERROR IN TOOL CALL")
+        logger.error(traceback.format_exc())
         yield "Error reaching endpoint"
 
 
