@@ -35,7 +35,7 @@ def chat_page(debug) -> None:
     conversation_doc = client.get_or_create_conversation(user_id, current_conversation_id)
     # If we created a new conversation we need to update the user_doc
     user_doc = client.get_or_create_user_data(user_id)
-    conversations = user_doc.get("conversations", [])
+    conversations = user_doc.get("conversations", {})
 
     # This saves it in case we needed to make a new one
     st.session_state["current_conversation_id"] = current_conversation_id

@@ -43,34 +43,34 @@ def conversation_sidebar(client, conversations, user_id, current_doc):
             conversation_doc = client.get_or_create_conversation(user_id, new_id)
             return_val = conversation_doc
         
-        for i, conversation_id in enumerate(conversations[::-1]):
+        convo_dicts = [{"id" : key, "name" : value["name"], "time" : value["creation_time"]} for key, value in conversations.items()]
+        convo_dicts.sort(key = lambda x : x["time"])
+        for i, conversation_dict in enumerate(convo_dicts):
             # Get conversation title from API
-            conversation_doc = client.get_or_create_conversation(user_id, conversation_id)
+            #conversation_doc = client.get_or_create_conversation(user_id, conversation_id)
+            conversation_name = conversation_dict["name"][0:30]
+            if len(conversation_name) > 20:
+                conversation_name += "..."
             
-            if len(conversation_doc["messages"]) == 1:
-                conversation_title = "EMPTY"
-            else:
-                conversation_title = conversation_doc["messages"][1]["content"][0:30]
-                if len(conversation_doc["messages"][1]["content"]) > 20:
-                    conversation_title += "..."
             # Highlight the current button by changing it's style
-            if conversation_doc["_id"] == current_doc["_id"]:
-                conversation_title = f"***{conversation_title}***"
+            if conversation_dict["id"] == current_doc["_id"]:
+                conversation_name = f"***{conversation_name}***"
             
             # This deletes unselected empty entries
-            elif len(conversation_doc["messages"]) == 1:
-                client.delete_conversation(user_id, conversation_doc["_id"])
+            elif conversation_name == "Blank Chat":
+                client.delete_conversation(user_id, conversation_dict["id"])
                 continue
 
             # Conversation selection button and delete button
             col1, col2 = st.columns((4, 1))
             with col1:
-                if st.button(f"{conversation_title}", key=f"select_conversation_{i}"):
+                if st.button(f"{conversation_name}", key=f"select_conversation_{i}"):
+                    conversation_doc = client.get_or_create_conversation(user_id, conversation_dict["id"])
                     return_val = conversation_doc
             with col2:
                 if st.button("❌", key=f"delete_conversation_{i}"):
-                    client.delete_conversation(user_id, conversation_id)
-                    if conversation_doc["_id"] == current_doc["_id"]:
+                    client.delete_conversation(user_id, conversation_dict["id"])
+                    if conversation_dict["id"] == current_doc["_id"]:
                         if len(conversations) > 1:
                             return_val = client.get_or_create_conversation(user_id, conversations[0])
                         else:
